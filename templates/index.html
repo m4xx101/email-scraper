@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Scraper Tool</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6700;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #ff6700;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #e05b00;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .action-btn {
+            background-color: #ff6700;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #e05b00;
+        }
+
+        .action-btn i {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Email Scraper Tool</h1>
+
+    <form id="scraper-form" method="POST">
+        <div class="grid">
+            <div>
+                <label>[*]Company Name:</label>
+                <input type="text" name="company" placeholder="Enter Company Name" required>
+            </div>
+
+            <div>
+                <label>[*]Domain Name:</label>
+                <input type="text" name="domain" placeholder="example.com" required>
+            </div>
+
+            <div>
+                <label>[*]Email Format:</label>
+                <select name="email_format" required>
+                    <option value="1">fLastname@domain.com</option>
+                    <option value="2">firstname.lastname@domain.com</option>
+                    <option value="3">lastnamef@domain.com</option>
+                    <option value="4">firstnamel@domain.com</option>
+                </select>
+            </div>
+
+            <div>
+                <label>User-Agent File:</label>
+                <input type="file" name="useragent_file" accept=".txt">
+            </div>
+
+            <div>
+                <label>Dehashed Username:</label>
+                <input type="text" name="dehashed_username" placeholder="Dehashed Username">
+            </div>
+
+            <div>
+                <label>Dehashed API Key:</label>
+                <input type="password" name="dehashed_api" placeholder="Dehashed API Key">
+            </div>
+
+            <div>
+                <label>Hunter.io API Key:</label>
+                <input type="password" name="hunter_api" placeholder="Hunter.io API Key">
+            </div>
+        </div>
+
+        <button type="submit">Start Scraping</button>
+    </form>
+
+    {% if result %}
+    <div style="margin-top: 20px;">
+        <h2>Generated Emails</h2>
+
+        <div class="button-container">
+            <button class="action-btn" onclick="copyEmails()">
+                <i class="material-icons">content_copy</i> Copy
+            </button>
+
+            <button class="action-btn" onclick="downloadCSV()">
+                <i class="material-icons">file_download</i> Download CSV
+            </button>
+        </div>
+
+        <pre id="emails">{{ result.emails | join('\n') }}</pre>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function copyEmails() {
+        const text = document.getElementById('emails').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Emails copied to clipboard!');
+        });
+    }
+
+    function downloadCSV() {
+        const csvContent = "data:text/csv;charset=utf-8," + document.getElementById('emails').innerText.replace(/\n/g, "\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "emails.csv");
+        document.body.appendChild(link);
+        link.click();
+    }
+</script>
+
+</body>
+</html>
