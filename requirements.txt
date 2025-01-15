@@ -1,0 +1,7 @@
+Flask
+selenium
+pyhunter
+requests
+pydub
+speechrecognition
+DrissionPage
